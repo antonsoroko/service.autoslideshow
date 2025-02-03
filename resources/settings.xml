@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<settings>
+    <!-- General -->
+    <category label="30000">
+        <setting id="autostart" type="bool" label="30001" default="false" />
+        <setting id="source_path" type="folder" label="30002" source="auto" />
+        <setting id="check_interval" type="number" label="30003" default="60"/>
+    </category>
+</settings>
