@@ -24,7 +24,7 @@ class KodiMonitor(xbmc.Monitor):
     def onNotification(self, sender, method, data):
         global currently_played_picture
         try:
-            #log("KodiMonitor: sender %s - method: %s  - data: %s" % (sender, method, data))
+            #log(f"KodiMonitor: sender {sender}; method: {method}; data: {data}", xbmc.LOGDEBUG)
             if method == "Player.OnPlay":
                 data = json.loads(data)
                 currently_played_picture = data['item']['file']
@@ -32,16 +32,7 @@ class KodiMonitor(xbmc.Monitor):
             log(e)
 
 def log(message, level=xbmc.LOGINFO):
-    xbmc.log("[{id}] {message}".format(id=ADDON_ID, message=message), level)
-
-def jsonrpc(**kwargs):
-    """Perform JSONRPC calls"""
-    from json import dumps, loads
-    if kwargs.get('id') is None:
-        kwargs.update(id=0)
-    if kwargs.get('jsonrpc') is None:
-        kwargs.update(jsonrpc='2.0')
-    return loads(xbmc.executeJSONRPC(dumps(kwargs)))
+    xbmc.log(f"[{ADDON_ID}] {message}", level)
 
 def list_dir_recursively(directory):
     content = { 'dirs': {}, 'files': [] }
@@ -69,7 +60,7 @@ def main():
 
     # Get initial content of directory and start slideshow
     content1 = list_dir_recursively(source_path)
-    xbmc.executebuiltin('SlideShow(%s,recursive)' %(source_path))
+    xbmc.executebuiltin(f"SlideShow({source_path},recursive)")
     log('Slideshow started, monitoring')
 
     # Wait for slideshow to start
@@ -83,7 +74,7 @@ def main():
             # Restart slideshow if directory content has changed
             if content1 != content2:
                 log('Directory content changed, restarting slideshow')
-                xbmc.executebuiltin('SlideShow(%s,recursive,beginslide=%s)' % (source_path, currently_played_picture))
+                xbmc.executebuiltin(f"SlideShow({source_path},recursive,beginslide={currently_played_picture})")
                 content1 = content2
         # If slideshow is no longer running (user has exited), exit script
         else:
